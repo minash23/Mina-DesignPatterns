@@ -1,7 +1,9 @@
+package textFormatter;
+
 public class Main {
     //textbranch
     public static void main(String[] args) {
-        // Create a new Format instance
+        // Create a new textFormatter.Format instance
         Format format = new Format();
 
         // Add sample content
@@ -14,15 +16,15 @@ public class Main {
                 "\nmaking this the first true generator on the Internet.");
 
         // Demonstrate different formatting styles
-        System.out.println("Plain Text Format:");
+        System.out.println("Plain Text textFormatter.Format:");
         format.setFormat(new PlainTextFormat());
         format.printFormatted();
 
-        System.out.println("\nHTML Format:");
+        System.out.println("\nHTML textFormatter.Format:");
         format.setFormat(new HTMLFormat());
         format.printFormatted();
 
-        System.out.println("\nMarkdown Format:");
+        System.out.println("\nMarkdown textFormatter.Format:");
         format.setFormat(new MarkdownFormat());
         format.printFormatted();
 

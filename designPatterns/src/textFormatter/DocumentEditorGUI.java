@@ -1,8 +1,9 @@
+package textFormatter;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 //textbranch
 
 public class DocumentEditorGUI extends JFrame {
@@ -34,7 +35,7 @@ public class DocumentEditorGUI extends JFrame {
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
 
-        // Format selection dropdown
+        // textFormatter.Format selection dropdown
         String[] formats = {"Plain Text", "HTML", "Markdown"};
         formatComboBox = new JComboBox<>(formats);
         formatComboBox.addActionListener(e -> updateFormat());
@@ -53,7 +54,7 @@ public class DocumentEditorGUI extends JFrame {
 
         // Top panel for format selection
         JPanel topPanel = new JPanel();
-        topPanel.add(new JLabel("Format: "));
+        topPanel.add(new JLabel("textFormatter.Format: "));
         topPanel.add(formatComboBox);
 
         // Bottom panel for buttons
@@ -128,7 +129,7 @@ public class DocumentEditorGUI extends JFrame {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        // Format the document
+        // textFormatter.Format the document
         documentFormat.setFormat(getCurrentFormat());
         documentFormat.printFormatted();
 

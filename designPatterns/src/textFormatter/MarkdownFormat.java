@@ -1,3 +1,5 @@
+package textFormatter;
+
 import java.util.ArrayList;
 import java.util.Random;
 //textbranch
