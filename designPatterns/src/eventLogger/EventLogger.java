@@ -1,13 +1,14 @@
-package eventLogger;
-
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EventLogger {
-    private static EventLogger instance;
-    private List<String> logHistory = new ArrayList<>();
+    private static volatile EventLogger instance;
+    private final List<String> logHistory = new CopyOnWriteArrayList<>();
+    private static final String DEFAULT_LOG_FILE = "application.log";
 
     public enum LogLevel {
         DEBUG, INFO, WARN, ERROR
@@ -15,9 +16,13 @@ public class EventLogger {
 
     private EventLogger() {}
 
-    public static synchronized EventLogger getInstance() {
+    public static EventLogger getInstance() {
         if (instance == null) {
-            instance = new EventLogger();
+            synchronized (EventLogger.class) {
+                if (instance == null) {
+                    instance = new EventLogger();
+                }
+            }
         }
         return instance;
     }
@@ -29,14 +34,14 @@ public class EventLogger {
     }
 
     public List<String> getLogHistory() {
-        return new ArrayList<>(logHistory);
+        return Collections.unmodifiableList(logHistory);
     }
 
-    public void logToConsole(LogLevel level, String message) {
-        System.out.println("[CONSOLE] [" + level + "] " + message);
+    public void logToFile(LogLevel level, String message) {
+        logToFile(level, message, DEFAULT_LOG_FILE);
     }
 
-    public void logToFile(LogLevel level, String message, String filePath) {
+    public synchronized void logToFile(LogLevel level, String message, String filePath) {
         try (FileWriter writer = new FileWriter(filePath, true)) {
             String logEntry = "[FILE] [" + level + "] " + message + "\n";
             writer.write(logEntry);
