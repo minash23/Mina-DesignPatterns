@@ -16,6 +16,10 @@ public class EventLogger {
     private final List<String> logHistory = new CopyOnWriteArrayList<>();
     private static final String DEFAULT_LOG_FILE = "application.log";
 
+    private boolean consoleEnabled = true;
+    private boolean fileEnabled = false;
+    private String currentLogFile = DEFAULT_LOG_FILE;
+
     public enum LogLevel {
         DEBUG, INFO, WARN, ERROR
     }
@@ -33,9 +37,31 @@ public class EventLogger {
         return instance;
     }
 
+    public void configureOutput(boolean consoleOutput, boolean fileOutput) {
+        this.consoleEnabled = consoleOutput;
+        this.fileEnabled = fileOutput;
+    }
+
+    public void configureOutput(boolean consoleOutput, boolean fileOutput, String logFilePath) {
+        configureOutput(consoleOutput, fileOutput);
+        this.currentLogFile = logFilePath;
+    }
+
     public void log(LogLevel level, String message) {
         String logEntry = "[" + level + "] " + message;
-        System.out.println(logEntry);
+
+        if (consoleEnabled) {
+            System.out.println(logEntry);
+        }
+
+        if (fileEnabled) {
+            try (FileWriter writer = new FileWriter(currentLogFile, true)) {
+                writer.write(logEntry + "\n");
+            } catch (IOException e) {
+                System.err.println("Failed to write to log file: " + e.getMessage());
+            }
+        }
+
         logHistory.add(logEntry);
     }
 
@@ -73,4 +99,6 @@ public class EventLogger {
             log(LogLevel.ERROR, "Failed to archive logs: " + e.getMessage());
         }
     }
+
+
 }
