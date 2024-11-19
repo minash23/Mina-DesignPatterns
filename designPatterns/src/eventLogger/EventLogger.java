@@ -11,6 +11,34 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+interface LogDestination {
+    void write(String logEntry);
+}
+
+class ConsoleLogDestination implements LogDestination {
+    @Override
+    public void write(String logEntry) {
+        System.out.println(logEntry);
+    }
+}
+
+class FileLogDestination implements LogDestination {
+    private String filePath;
+
+    public FileLogDestination(String filePath) {
+        this.filePath = filePath;
+    }
+
+    @Override
+    public void write(String logEntry) {
+        try (FileWriter writer = new FileWriter(filePath, true)) {
+            writer.write(logEntry + "\n");
+        } catch (IOException e) {
+            System.err.println("Failed to write to log file: " + e.getMessage());
+        }
+    }
+}
+
 public class EventLogger {
     private static volatile EventLogger instance;
     private final List<String> logHistory = new CopyOnWriteArrayList<>();
@@ -19,6 +47,7 @@ public class EventLogger {
     private boolean consoleEnabled = true;
     private boolean fileEnabled = false;
     private String currentLogFile = DEFAULT_LOG_FILE;
+    private List<LogDestination> destinations = new ArrayList<>();
 
     public enum LogLevel {
         DEBUG, INFO, WARN, ERROR
@@ -73,6 +102,12 @@ public class EventLogger {
             }
         }
 
+        if (!destinations.isEmpty()) {
+            for (LogDestination destination : destinations) {
+                destination.write(logEntry);
+            }
+        }
+
         logHistory.add(logEntry);
     }
 
@@ -111,5 +146,11 @@ public class EventLogger {
         }
     }
 
+    public void addDestination(LogDestination destination) {
+        destinations.add(destination);
+    }
 
+    public void removeDestination(LogDestination destination) {
+        destinations.remove(destination);
+    }
 }
