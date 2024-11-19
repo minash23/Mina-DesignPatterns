@@ -29,4 +29,8 @@ public class EventLogger {
     public List<String> getLogHistory() {
         return new ArrayList<>(logHistory);
     }
+
+    public void logToConsole(LogLevel level, String message) {
+        System.out.println("[CONSOLE] [" + level + "] " + message);
+    }
 }
