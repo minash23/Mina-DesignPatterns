@@ -2,16 +2,22 @@ package notificationSystem;
 
 public class Notification {
     private String message;
+    private NotificationType type;
 
-    public Notification(String message) {
+    public enum NotificationType {
+        ALERT, INFO, WARNING, CRITICAL
+    }
+
+    public Notification(String message, NotificationType type) {
         this.message = message;
+        this.type = type;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void send() {
-        System.out.println("Basic Notification: " + message);
+    public NotificationType getType() {
+        return type;
     }
 }
