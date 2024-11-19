@@ -1,5 +1,7 @@
 package eventLogger;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,5 +34,14 @@ public class EventLogger {
 
     public void logToConsole(LogLevel level, String message) {
         System.out.println("[CONSOLE] [" + level + "] " + message);
+    }
+
+    public void logToFile(LogLevel level, String message, String filePath) {
+        try (FileWriter writer = new FileWriter(filePath, true)) {
+            String logEntry = "[FILE] [" + level + "] " + message + "\n";
+            writer.write(logEntry);
+        } catch (IOException e) {
+            System.err.println("Failed to write to log file: " + e.getMessage());
+        }
     }
 }
