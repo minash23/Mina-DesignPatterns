@@ -50,10 +50,16 @@ public class EventLogger {
     private static final DateTimeFormatter TIMESTAMP_FORMAT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
+    private String formatLogEntry(LocalDateTime timestamp, LogLevel level, String message) {
+        return String.format("[%s] [%s] %s",
+                timestamp.format(TIMESTAMP_FORMAT),
+                level.name().toUpperCase(),
+                message);
+    }
+
     public void log(LogLevel level, String message) {
         LocalDateTime timestamp = LocalDateTime.now();
-        String logEntry = String.format("[%s] [%s] %s",
-                timestamp.format(TIMESTAMP_FORMAT), level, message);
+        String logEntry = formatLogEntry(timestamp, level, message);
 
         if (consoleEnabled) {
             System.out.println(logEntry);
@@ -66,6 +72,8 @@ public class EventLogger {
                 System.err.println("Failed to write to log file: " + e.getMessage());
             }
         }
+
+        logHistory.add(logEntry);
     }
 
     public List<String> getLogHistory() {
