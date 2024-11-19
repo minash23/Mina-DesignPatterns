@@ -1,8 +1,17 @@
 package notificationSystem;
 
 public class NotificationService {
+    private NotificationStrategy strategy;
+
+    public void setStrategy(NotificationStrategy strategy) {
+        this.strategy = strategy;
+    }
+
     public void sendNotification(String message) {
-        Notification notification = new Notification(message);
-        notification.send();
+        if (strategy != null) {
+            strategy.send(message);
+        } else {
+            System.out.println("Basic Notification: " + message);
+        }
     }
 }
