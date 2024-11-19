@@ -1,5 +1,11 @@
+package eventLogger;
+
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
@@ -47,6 +53,24 @@ public class EventLogger {
             writer.write(logEntry);
         } catch (IOException e) {
             System.err.println("Failed to write to log file: " + e.getMessage());
+        }
+    }
+
+    public void archiveLogs() {
+        archiveLogs(DEFAULT_LOG_FILE);
+    }
+
+    public void archiveLogs(String sourcePath) {
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String archivePath = "log_archive_" + timestamp + ".log";
+
+        try {
+            Files.copy(Paths.get(sourcePath), Paths.get(archivePath));
+            // Optionally clear the original log file
+            new FileWriter(sourcePath).close();
+            log(LogLevel.INFO, "Logs archived to " + archivePath);
+        } catch (IOException e) {
+            log(LogLevel.ERROR, "Failed to archive logs: " + e.getMessage());
         }
     }
 }
